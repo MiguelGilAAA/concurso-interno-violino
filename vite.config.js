@@ -4,8 +4,6 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite' // Crucial import
 
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(), // Crucial plugin usage
-  ],
+  base: '/concurso-interno-violino/', // Nome do repositório
+  plugins: [react()]
 })

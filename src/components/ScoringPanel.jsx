@@ -1,12 +1,10 @@
-import { useState } from 'react';
+// src/components/ScoringPanel.jsx
+import React, { useState, useEffect } from 'react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase'; // certifique-se de que o caminho está correto
-import '../FichaAvaliacao.css';
+import { db } from '../firebase'; // Adjust path
 
-export default function FichaAvaliacao() {
-  const [formData, setFormData] = useState({
-    nome: '',
-    categoria: '',
+export default function ScoringPanel({ participant, juryEmail }) {
+  const initialFormState = {
     afinacao: 5,
     ritmo: 5,
     som: 5,
@@ -15,11 +13,19 @@ export default function FichaAvaliacao() {
     presenca: 5,
     pontoForte: '',
     sugestao: '',
-  });
-
+  };
+  const [formData, setFormData] = useState(initialFormState);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Reset form when participant changes
+  useEffect(() => {
+    setFormData(initialFormState);
+    setSuccessMessage('');
+    setErrorMessage('');
+  }, [participant]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,8 +40,8 @@ export default function FichaAvaliacao() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.nome || !formData.categoria) {
-      setErrorMessage('Por favor, preencha todos os campos obrigatórios.');
+    if (!participant) {
+      setErrorMessage('Por favor, selecione um participante primeiro.');
       return;
     }
 
@@ -45,23 +51,26 @@ export default function FichaAvaliacao() {
 
     try {
       await addDoc(collection(db, 'avaliacoes'), {
-        ...formData,
+        participantId: participant.id,
+        participantName: participant.nome,
+        participantCategoria: participant.categoria,
+        juryEmail: juryEmail,
+        scores: { // Nest scores for clarity
+          afinacao: formData.afinacao,
+          ritmo: formData.ritmo,
+          som: formData.som,
+          tecnica: formData.tecnica,
+          expressividade: formData.expressividade,
+          presenca: formData.presenca,
+        },
+        pontoForte: formData.pontoForte,
+        sugestao: formData.sugestao,
         timestamp: serverTimestamp(),
       });
 
       setSuccessMessage('✅ Avaliação enviada com sucesso!');
-      setFormData({
-        nome: '',
-        categoria: '',
-        afinacao: 5,
-        ritmo: 5,
-        som: 5,
-        tecnica: 5,
-        expressividade: 5,
-        presenca: 5,
-        pontoForte: '',
-        sugestao: '',
-      });
+      // Optionally, clear form or move to next participant logic here
+      // setFormData(initialFormState); // Already handled by useEffect on participant change
     } catch (error) {
       console.error('Erro ao salvar avaliação:', error);
       setErrorMessage('Erro ao enviar. Tente novamente.');
@@ -70,42 +79,24 @@ export default function FichaAvaliacao() {
     }
   };
 
+  if (!participant) {
+    return (
+      <div className="panel scoring-panel">
+        <h3 className="panel-title">Painel de Avaliação 🎻</h3>
+        <p>Selecione um participante para iniciar a avaliação.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="page-container">
-      <form onSubmit={handleSubmit} className="form-wrapper">
-        <h2 className="form-title">Ficha de Avaliação 🎻</h2>
+    <div className="panel scoring-panel">
+      <h3 className="panel-title">Avaliar: {participant.nome} ({participant.categoria})</h3>
 
-        {successMessage && <div className="message success-message">{successMessage}</div>}
-        {errorMessage && <div className="message error-message">{errorMessage}</div>}
+      {successMessage && <div className="message success-message">{successMessage}</div>}
+      {errorMessage && <div className="message error-message">{errorMessage}</div>}
 
-        <div className="form-group">
-          <input
-            type="text"
-            id="nome"
-            name="nome"
-            placeholder="Nome do aluno"
-            value={formData.nome}
-            onChange={handleChange}
-            className="form-input"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <select
-            id="categoria"
-            name="categoria"
-            value={formData.categoria}
-            onChange={handleChange}
-            className="form-select"
-            required
-          >
-            <option value="">Selecione a categoria</option>
-            <option value="Iniciante">Iniciante</option>
-            <option value="Intermédio">Intermédio</option>
-            <option value="Avançado">Avançado</option>
-          </select>
-        </div>
+      <form onSubmit={handleSubmit}>
+        {/* Participant Name and Category are now displayed in title, not as inputs */}
 
         {['afinacao', 'ritmo', 'som', 'tecnica', 'expressividade', 'presenca'].map((campo) => (
           <div key={campo} className="range-slider-container">
@@ -127,10 +118,11 @@ export default function FichaAvaliacao() {
         ))}
 
         <div className="form-group">
+          <label htmlFor="pontoForte" className="form-label">Ponto forte da atuação</label>
           <textarea
             id="pontoForte"
             name="pontoForte"
-            placeholder="Ponto forte da atuação"
+            placeholder="Descreva o principal ponto forte..."
             value={formData.pontoForte}
             onChange={handleChange}
             className="form-textarea"
@@ -138,17 +130,18 @@ export default function FichaAvaliacao() {
         </div>
 
         <div className="form-group">
+          <label htmlFor="sugestao" className="form-label">Sugestão para evolução</label>
           <textarea
             id="sugestao"
             name="sugestao"
-            placeholder="Sugestão para evolução"
+            placeholder="Sugestões construtivas..."
             value={formData.sugestao}
             onChange={handleChange}
             className="form-textarea"
           />
         </div>
 
-        <button type="submit" disabled={loading} className="submit-button">
+        <button type="submit" disabled={loading || !participant} className="submit-button">
           {loading ? 'Enviando...' : 'Enviar Avaliação'}
         </button>
       </form>

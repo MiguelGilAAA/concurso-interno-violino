@@ -50,7 +50,6 @@ export default function JuryDashboard() {
 
   return (
     <div className="dashboard-page-container">
-      <Navbar user={user} />
       
       <div className="participant-selector panel"> {/* Styling for selector can be enhanced */}
         <label htmlFor="participant-select">Selecione o Participante:</label>

@@ -1,0 +1,20 @@
+/* In JuryDashboard.css or a new JuryLayout.css */
+.jury-layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-color, #f8f9fa);
+}
+
+.jury-page-content-wrapper {
+  flex-grow: 1;
+  /*
+    IMPORTANT: Add padding-top here to prevent content from being hidden
+    under the sticky jury Navbar. The value should be the height of your jury Navbar.
+  */
+  padding-top: 100px; /* ADJUST THIS VALUE! Example: approx 90px-110px */
+  /* Add other general padding for jury pages if needed */
+  /* padding-left: var(--padding-lg); */
+  /* padding-right: var(--padding-lg); */
+  /* padding-bottom: var(--padding-lg); */
+}

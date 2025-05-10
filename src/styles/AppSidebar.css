@@ -1,0 +1,120 @@
+/* src/styles/AppSidebar.css */
+
+/* This targets the root of the sidebar component if you need to override anything globally for it */
+/* .ps-sidebar-root { ... } */
+
+.sidebar-header {
+  padding: 15px 20px;
+  text-align: left; /* Default to left */
+  border-bottom: 1px solid hsl(210, 15%, 90%);
+  margin-bottom: 10px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Default to left */
+}
+
+.ps-collapsed .sidebar-header { /* When sidebar is collapsed */
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.sidebar-logo {
+  height: 40px;
+  width: auto;
+  transition: height 0.3s ease;
+}
+.ps-collapsed .sidebar-logo { /* When sidebar is collapsed */
+  height: 30px;
+}
+
+.sidebar-title {
+  margin-left: 10px;
+  font-size: 1.0rem; /* Adjusted size */
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Hide if it overflows when collapsing */
+}
+.ps-collapsed .sidebar-title {
+  display: none; /* Hide title text when collapsed */
+}
+
+
+/* --- Menu Item Styling --- */
+/* General button style for all menu items and submenu toggles */
+.ps-menu-button {
+  color: #475569 !important; /* Use !important if default styles are too strong */
+  background-color: transparent !important;
+  font-size: 0.85rem !important; /* Smaller base font */
+  padding: 8px 18px !important; /* Adjust padding */
+  font-weight: 500 !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+.ps-menu-button:hover {
+  background-color: hsl(210, 20%, 92%) !important;
+  color: #1e293b !important;
+}
+
+/* Active menu item */
+.ps-menu-button.ps-active { /* react-pro-sidebar adds .ps-active */
+  background-color: hsl(210, 70%, 55%) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+.ps-menu-button.ps-active:hover {
+  background-color: hsl(210, 70%, 50%) !important;
+  color: #ffffff !important;
+}
+
+/* Submenu specific styling */
+.ps-submenu-content {
+  background-color: hsl(210, 15%, 96%) !important; /* Slightly different bg for submenu items block */
+  padding-left: 10px !important; /* Indent submenu items further */
+}
+
+.ps-submenu-content .ps-menu-button { /* Target buttons within submenu */
+  font-size: 0.8rem !important;
+  padding: 7px 15px 7px 15px !important; /* Top Right Bottom Left */
+}
+
+
+/* Submenu toggle arrow */
+.ps-submenu-expand-icon {
+  /* Styles for the default expand icon if needed, or use your own */
+  /* Example: if you want to change its color or size */
+}
+.ps-submenu-expand-icon > span { /* Target the actual arrow if it's a span */
+  /* transform: rotate(-90deg); */
+}
+.ps-open > .ps-menu-button > .ps-submenu-expand-icon > span { /* When submenu is open */
+  /* transform: rotate(0deg); */
+}
+
+
+/* If you use icons with menu items */
+.ps-menu-icon {
+  color: hsl(210, 50%, 50%);
+  margin-right: 10px;
+}
+.ps-collapsed .ps-menu-icon {
+  margin-right: 0;
+}
+.ps-menu-button.ps-active .ps-menu-icon {
+  color: #ffffff;
+}
+
+
+.sidebar-footer {
+  padding: 15px 20px;
+  text-align: center;
+  margin-top: auto; /* Pushes footer to bottom */
+  border-top: 1px solid hsl(210, 15%, 90%);
+  font-size: 0.8rem;
+  color: #64748B;
+}
+.ps-collapsed .sidebar-footer small {
+    display: none; /* Hide footer text when collapsed */
+}

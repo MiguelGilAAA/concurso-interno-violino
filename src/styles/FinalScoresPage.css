@@ -1,6 +1,26 @@
 /* src/styles/FinalScoresPage.css */
 
-/* ... (keep existing styles for .final-scores-page-container, .final-scores-content, .page-title, etc.) ... */
+.final-scores-page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa; /* Or your --background-color */
+}
+
+.final-scores-content {
+  flex-grow: 1;
+  padding: 1.5rem; /* Your existing horizontal/bottom padding */
+  /*
+    Calculate or estimate your navbar's height.
+    Example: If navbar-logo-cmacg is 60px, and vertical padding is 1rem (16px) top + 1rem bottom = 32px.
+    Total ~ 92px. Add a little buffer.
+  */
+  padding-top: 100px; /* ADJUST THIS VALUE based on your actual navbar height */
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
 
 .category-section {
   margin-bottom: var(--padding-xl, 2rem); /* Space between category tables */

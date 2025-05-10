@@ -17,7 +17,7 @@ export default function Navbar({ user }) {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/"); // Navigate to login page after logout
+      navigate("/");
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -28,13 +28,13 @@ export default function Navbar({ user }) {
   };
 
   const handleGoToFinalScores = () => {
-    navigate("/final-scores");
+    navigate("/resultados-juri");
   };
 
   // Determine if the "Participantes" button should be active or prominent
   // This is optional, but can improve UX
   const isParticipantsPageActive = location.pathname === "/avaliar";
-  const isFinalScoresPageActive = location.pathname === "/final-scores";
+  const isFinalScoresPageActive = location.pathname === "/resultados-juri";
 
 
   return (

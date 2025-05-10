@@ -1,0 +1,112 @@
+/* src/styles/MainLayout.css */
+:root {
+    --burger-bar-color: #333;
+    --sidebar-width-desktop: 270px; /* Default react-pro-sidebar width */
+    --sidebar-width-collapsed-desktop: 80px; /* Default react-pro-sidebar collapsed width */
+    /* --navbar-height: 0px; /* If you had a top navbar, account for its height */
+}
+
+.site-container-pro-sidebar {
+    display: flex; /* This is important for layout */
+    /* height: 100vh; /* Not strictly needed here if AppSidebar is position:fixed */
+    position: relative; /* Good for positioning absolutely positioned children like burger */
+}
+
+/* AppSidebar itself is position: fixed, height: 100vh from its inline styles */
+
+.content-wrap-pro-sidebar {
+    flex-grow: 1;
+    padding: 25px;
+    overflow-y: auto;
+    min-height: 100vh;
+    box-sizing: border-box;
+    transition: margin-left 0.3s ease-in-out;
+    /* Default margin for when sidebar is collapsed on desktop AND NOT MOBILE */
+    margin-left: var(--sidebar-width-collapsed-desktop);
+}
+
+/* When sidebar is NOT broken (desktop) AND NOT collapsed (expanded) */
+/* ~ .content-wrap-pro-sidebar targets a sibling that comes after */
+.site-container-pro-sidebar .ps-sidebar-root:not(.ps-broken):not(.ps-collapsed) ~ .content-wrap-pro-sidebar {
+    margin-left: var(--sidebar-width-desktop);
+}
+
+/* When sidebar IS broken (mobile) - content should take full width (overlay mode) */
+.site-container-pro-sidebar .ps-sidebar-root.ps-broken ~ .content-wrap-pro-sidebar {
+    margin-left: 0;
+}
+
+
+/* --- Burger Button --- */
+.burger-button-container {
+    position: fixed; /* Fixed position for burger */
+    top: 15px;
+    left: 15px;
+    z-index: 1005; /* Above sidebar when it's an overlay */
+    display: none; /* Hidden by default, shown on mobile (when sidebar is 'broken') */
+}
+
+/* Show burger only when sidebar is in "broken" (mobile) mode */
+.ps-sidebar-root.ps-broken ~ .burger-button-container {
+    display: block;
+}
+
+/* If sidebar is "broken" AND "toggled" (open as overlay on mobile),
+   the burger button should reflect the "open" state for its X animation.
+   The BurgerButton component's isOpen prop handles the .open class for styling.
+   The BurgerButton's position might need adjustment if the sidebar is a permanent overlay.
+   With react-pro-sidebar's `toggled` prop, the sidebar itself handles the overlay.
+   The burger should typically stay in the top-left of the viewport.
+*/
+
+.burger-button-pro-sidebar {
+    background: #fff; /* Give it a background to see it against page content */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px; /* Adjust padding */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 40px; /* Adjust size */
+    height: 36px; /* Adjust size */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.burger-button-pro-sidebar span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--burger-bar-color);
+    border-radius: 3px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* X animation for burger when open */
+.burger-button-pro-sidebar.open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg); /* Adjust transform values for new size */
+}
+.burger-button-pro-sidebar.open span:nth-child(2) {
+    opacity: 0;
+}
+.burger-button-pro-sidebar.open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg); /* Adjust transform values */
+}
+
+/* Optional: Dimming overlay when sidebar is open on mobile (toggled and broken) */
+/* react-pro-sidebar provides a backdrop when toggled on broken mode,
+   so you might not need this custom overlay.
+   If you do, you'd apply a class to site-container-pro-sidebar when the sidebar is toggled.
+*/
+/*
+.site-container-pro-sidebar.sidebar-overlay-active::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+}
+*/

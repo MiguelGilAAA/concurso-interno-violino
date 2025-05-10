@@ -166,7 +166,6 @@ export default function FinalScoresPage() {
   if (loadingAuth || (isLoading && !error && Object.keys(scoresByCategories).length === 0)) {
     return (
       <div className="page-loading-container">
-        <Navbar user={user} />
         <p className="loading-text">Carregando resultados finais...</p>
       </div>
     );
@@ -174,7 +173,6 @@ export default function FinalScoresPage() {
 
   return (
     <div className="final-scores-page-container">
-      <Navbar user={user} />
       <main className="final-scores-content">
         <h1 className="page-title">Resultados Finais do Concurso</h1>
 

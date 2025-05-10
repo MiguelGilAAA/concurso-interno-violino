@@ -1,6 +1,6 @@
 // src/components/Navbar.jsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase"; // Adjust path as necessary
 
@@ -8,8 +8,11 @@ import { auth } from "../firebase"; // Adjust path as necessary
 import logoGulbenkian from "../assets/images/logo-gulbenkian.png";
 import logoRepublica from "../assets/images/logo-republica-portuguesa.png";
 
+import "../styles/Navbar.css"; // Adjust path as necessary
+
 export default function Navbar({ user }) {
   const navigate = useNavigate();
+  const location = useLocation(); // Get current location
 
   const handleLogout = async () => {
     try {
@@ -20,22 +23,58 @@ export default function Navbar({ user }) {
     }
   };
 
-  const handleGoToFinalScores = () => {
-    navigate("/final-scores"); // Adjust route as needed
+  const handleGoToParticipants = () => {
+    navigate("/avaliar"); // This is the route for JuryDashboard
   };
+
+  const handleGoToFinalScores = () => {
+    navigate("/final-scores");
+  };
+
+  // Determine if the "Participantes" button should be active or prominent
+  // This is optional, but can improve UX
+  const isParticipantsPageActive = location.pathname === "/avaliar";
+  const isFinalScoresPageActive = location.pathname === "/final-scores";
+
 
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <img src={logoGulbenkian} alt="Calouste Gulbenkian Logo" className="navbar-logo" />
+        <img src={logoGulbenkian} alt="Calouste Gulbenkian Logo" className="navbar-logo-cmacg" />
         <img src={logoRepublica} alt="República Portuguesa Logo" className="navbar-logo" />
       </div>
       {user && (
         <div className="navbar-user-info">
           <span className="navbar-email">Júri: {user.email}</span>
-          <button onClick={handleGoToFinalScores} className="navbar-button">
+          {/* Conditionally render or style based on current page */}
+          {!isParticipantsPageActive && ( // Only show if not already on participants page
+            <button onClick={handleGoToParticipants} className="navbar-button">
+              Participantes
+            </button>
+          )}
+          {/* OR always show and style differently:
+          <button
+            onClick={handleGoToParticipants}
+            className={`navbar-button ${isParticipantsPageActive ? 'navbar-button-active' : ''}`}
+          >
+            Participantes
+          </button>
+          */}
+
+          {!isFinalScoresPageActive && ( // Only show if not already on final scores page
+            <button onClick={handleGoToFinalScores} className="navbar-button">
+              Resultados Finais
+            </button>
+          )}
+          {/* OR always show and style differently:
+          <button
+            onClick={handleGoToFinalScores}
+            className={`navbar-button ${isFinalScoresPageActive ? 'navbar-button-active' : ''}`}
+          >
             Resultados Finais
           </button>
+          */}
+
           <button onClick={handleLogout} className="navbar-button">
             Logout
           </button>

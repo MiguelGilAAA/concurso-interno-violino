@@ -1,0 +1,180 @@
+/* src/styles/JuryDashboard.css (or your global/navbar specific CSS) */
+
+/* ... (keep your existing :root variables and other styles) ... */
+
+/* --- Navbar Styles --- */
+.navbar {
+  background-color: #ffffff; /* CHANGED: White background */
+  color: var(--primary-color, #2c3e50); /* CHANGED: Dark text color for contrast */
+  padding: var(--padding-md, 1rem) var(--padding-lg, 1.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Softer shadow for light background */
+  flex-wrap: wrap;
+  gap: var(--padding-md, 1rem);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-lg, 1.5rem);
+}
+
+.navbar-logo-cmacg {
+  height: 60px;
+
+  /* filter: brightness(0) invert(1); REMOVED: No longer need to invert colors */
+}
+/* Specific logo adjustments if needed, e.g., if one logo has a white background itself */
+/* .navbar-logo.gulbenkian-logo { background-color: transparent; } */
+
+.navbar-logo {
+  height: 30px;
+  object-fit: contain;
+  /* filter: brightness(0) invert(1); REMOVED: No longer need to invert colors */
+}
+
+.navbar-user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-md, 1rem);
+  flex-wrap: wrap;
+}
+
+.navbar-email {
+  font-size: 0.9rem;
+  font-family: var(--font-family-sans, 'Arial', sans-serif);
+  color: var(--text-color, #333); /* CHANGED: Ensure good contrast for email text */
+  margin-right: var(--padding-sm, 0.9rem);
+  white-space: nowrap;
+}
+
+/* Enhanced Button Style (keeping the Uiverse.io style) */
+.navbar-button {
+  align-items: center;
+  appearance: none;
+  background-color: #fcfcfd; /* This already has a light background, which is good */
+  border-radius: 6px;
+  border-width: 0;
+  box-shadow:
+    rgba(45, 35, 66, 0.2) 0 2px 4px,
+    rgba(45, 35, 66, 0.15) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #36395a; /* Text color for button remains dark */
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-family-sans, 'Arial', sans-serif);
+  font-weight: 400;
+  height: 30px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding: 0 var(--padding-md, 1rem);
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    box-shadow 0.15s,
+    transform 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 0.75rem;
+}
+
+.navbar-button:focus {
+  outline: none;
+  box-shadow:
+    #d6d6e7 0 0 0 2px inset,
+    rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+}
+
+.navbar-button:hover {
+  box-shadow:
+    rgba(45, 35, 66, 0.3) 0 4px 8px,
+    rgba(45, 35, 66, 0.2) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.navbar-button:active {
+  box-shadow: #d6d6e7 0 3px 7px inset;
+  transform: translateY(1px);
+}
+
+
+/* --- Responsive Adjustments for Navbar (largely the same) --- */
+@media (max-width: 768px) {
+  .navbar {
+    padding: var(--padding-sm, 0.5rem) var(--padding-md, 1rem);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar-brand {
+    margin-bottom: var(--padding-sm, 0.5rem);
+  }
+
+  .navbar-logo {
+    height: 45px;
+  }
+
+  .navbar-user-info {
+    width: 100%;
+    justify-content: space-between;
+    gap: var(--padding-sm, 0.5rem);
+  }
+
+  .navbar-email {
+    font-size: 0.9rem;
+    margin-right: auto;
+  }
+
+  .navbar-button {
+    height: 40px;
+    font-size: 0.9rem;
+    padding: 0 var(--padding-sm, 0.5rem);
+    flex-grow: 1;
+    max-width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand {
+    gap: var(--padding-md, 1rem);
+    align-self: center;
+  }
+  .navbar-logo {
+    height: 40px;
+  }
+  .navbar-user-info {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .navbar-email {
+    text-align: center;
+    margin-bottom: var(--padding-sm, 0.5rem);
+    margin-right: 0;
+    color: var(--text-color, #333); /* Ensure consistent text color */
+  }
+  .navbar-button {
+    width: 100%;
+    max-width: none;
+    margin-bottom: var(--padding-xs, 0.25rem);
+  }
+  .navbar-button:last-child {
+    margin-bottom: 0;
+  }
+}

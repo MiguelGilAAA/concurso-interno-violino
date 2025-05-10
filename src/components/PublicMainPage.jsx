@@ -6,7 +6,7 @@ export default function PublicMainPage() {
   return (
     <div className="public-main-page">
       <header className="hero-section">
-        <h1>IV Concurso Interno de Violino</h1>
+        <h1>V Concurso Interno de Violino</h1>
         <p>Bem-vindo à página oficial do nosso concurso! Descubra talentos, consulte o regulamento e acompanhe os resultados.</p>
         {/* You can add an image or carousel here */}
       </header>

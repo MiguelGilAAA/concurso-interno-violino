@@ -9,6 +9,7 @@
   border-bottom: 1px solid hsl(210, 15%, 90%);
   margin-bottom: 10px;
   min-height: 60px;
+  position: 'fixed',
   display: flex;
   align-items: center;
   justify-content: flex-start; /* Default to left */
@@ -21,12 +22,12 @@
 }
 
 .sidebar-logo {
-  height: 40px;
+  height: 120px;
   width: auto;
   transition: height 0.3s ease;
 }
 .ps-collapsed .sidebar-logo { /* When sidebar is collapsed */
-  height: 30px;
+  height: 20px;
 }
 
 .sidebar-title {
@@ -64,6 +65,7 @@
   color: #ffffff !important;
   font-weight: 600 !important;
 }
+
 .ps-menu-button.ps-active:hover {
   background-color: hsl(210, 70%, 50%) !important;
   color: #ffffff !important;
@@ -78,6 +80,28 @@
 .ps-submenu-content .ps-menu-button { /* Target buttons within submenu */
   font-size: 0.8rem !important;
   padding: 7px 15px 7px 15px !important; /* Top Right Bottom Left */
+}
+
+
+/* Style for the button of an open SubMenu (the SubMenu label itself) */
+.ps-submenu-root.ps-open > .ps-menu-button {
+  background-color: hsl(210, 20%, 95%) !important; /* Light grey when open */
+  color: #1e293b !important; /* Darker text */
+  font-weight: 500 !important;
+}
+
+/* Ensure active child item overrides its parent SubMenu's "open" style */
+.ps-submenu-root.ps-open > .ps-menu-button.ps-active {
+  background-color: hsl(210, 70%, 55%) !important; /* Blue for active page */
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* And ensure active item within an open submenu also gets the primary active style */
+.ps-submenu-root.ps-open .ps-submenu-content .ps-menu-button.ps-active {
+  background-color: hsl(210, 70%, 55%) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
 }
 
 
@@ -108,7 +132,7 @@
 
 
 .sidebar-footer {
-  padding: 15px 20px;
+  padding: 42px 20px;
   text-align: center;
   margin-top: auto; /* Pushes footer to bottom */
   border-top: 1px solid hsl(210, 15%, 90%);

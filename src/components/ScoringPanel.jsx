@@ -13,14 +13,16 @@ import {
 import { db } from '../firebase'; // Adjust path
 
 // Define CRITERIA_KEYS if not already defined globally or imported
-const CRITERIA_KEYS = ['afinacao', 'ritmo', 'som', 'tecnica', 'expressividade', 'presenca'];
+const CRITERIA_KEYS = ['afinacao', 'ritmo', 'som', 'postura', 'expressividade', 'presenca'];
+
+
 
 export default function ScoringPanel({ participant, juryEmail }) { // Removed onEvaluationLoaded as it's not strictly needed for this direct update
   const initialFormState = {
     afinacao: 5,
     ritmo: 5,
     som: 5,
-    tecnica: 5,
+    postura: 5,
     expressividade: 5,
     presenca: 5,
     pontoForte: '',
@@ -66,7 +68,7 @@ export default function ScoringPanel({ participant, juryEmail }) { // Removed on
             afinacao: evalData.scores?.afinacao !== undefined ? evalData.scores.afinacao : 5,
             ritmo: evalData.scores?.ritmo !== undefined ? evalData.scores.ritmo : 5,
             som: evalData.scores?.som !== undefined ? evalData.scores.som : 5,
-            tecnica: evalData.scores?.tecnica !== undefined ? evalData.scores.tecnica : 5,
+            postura: evalData.scores?.postura !== undefined ? evalData.scores.postura : 5,
             expressividade: evalData.scores?.expressividade !== undefined ? evalData.scores.expressividade : 5,
             presenca: evalData.scores?.presenca !== undefined ? evalData.scores.presenca : 5,
             pontoForte: evalData.pontoForte || '',
@@ -123,7 +125,7 @@ export default function ScoringPanel({ participant, juryEmail }) { // Removed on
         afinacao: formData.afinacao,
         ritmo: formData.ritmo,
         som: formData.som,
-        tecnica: formData.tecnica,
+        postura: formData.postura,
         expressividade: formData.expressividade,
         presenca: formData.presenca,
       },

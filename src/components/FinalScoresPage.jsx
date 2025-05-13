@@ -1,24 +1,53 @@
-// src/components/JuryFinalScoresPage.jsx (or FinalScoresPage.jsx if that's the jury one)
+// src/components/JuryFinalScoresPage.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { collection, getDocs, query, orderBy as fbOrderBy } from 'firebase/firestore';
-import { db, auth } from '../firebase'; // Assuming auth is needed for useAuthState
+import { db, auth } from '../firebase';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 
-// import Navbar from '../components/Navbar'; // Assuming Navbar is provided by JuryLayout
 import '../styles/FinalScoresPage.css'; // Ensure this path is correct
 
-const CRITERIA_KEYS = ['afinacao', 'ritmo', 'som', 'tecnica', 'expressividade', 'presenca'];
-// Ensure your CATEGORY_ORDER in the submission form matches these keys if they are different
+const CRITERIA_KEYS = ['afinacao', 'ritmo', 'som', 'postura', 'expressividade', 'presenca'];
 const CATEGORY_ORDER = ['A - 2º ano de iniciação', 'B - 3º e 4º ano de iniciação', 'C - 1º e 2º Grau', 'D - 3º e 4º Grau', 'E - 5º e 6º Grau', 'F - 7º e 8º Grau'];
 
+// --- HELPER FUNCTIONS (Defined at module scope) ---
 
-// Helper Function to calculate a single jury's average score
+const getNumericalPlace = (awardString) => {
+    if (!awardString || awardString === '' || awardString.toLowerCase().includes('calcular') || awardString.toLowerCase().includes('não definido')) return 999;
+    if (awardString.toLowerCase().includes('menção honrosa')) return 99;
+    if (awardString.toLowerCase().includes('não atribuído')) return 998;
+    const match = awardString.match(/^(\d+)/);
+    if (match && parseInt(match[1], 10) === 0) return 997;
+    return match ? parseInt(match[1], 10) : 996;
+};
+
+const processAwardString = (awardString) => {
+    let numericalPlace = 999;
+    let displayString = awardString;
+    let isExAequoByString = false;
+    if (!awardString || awardString === '' || awardString.toLowerCase().includes('calcular') || awardString.toLowerCase().includes('não definido')) {
+        numericalPlace = 999; displayString = '';
+    } else if (awardString.toLowerCase().includes('menção honrosa')) {
+        numericalPlace = 99; displayString = 'Menção Honrosa';
+        if (awardString.toLowerCase().includes('ex aequo')) isExAequoByString = true;
+    } else if (awardString.toLowerCase().includes('não atribuído')) {
+        numericalPlace = 998; displayString = 'Não Atribuído';
+    } else {
+        const match = awardString.match(/^(\d+)/);
+        if (match) {
+            numericalPlace = parseInt(match[1], 10);
+            if (numericalPlace === 0) numericalPlace = 997;
+        } else { numericalPlace = 996; }
+        if (awardString.toLowerCase().includes('ex aequo')) isExAequoByString = true;
+    }
+    return { numericalPlace, displayString, isExAequoByString };
+};
+
 const calculateJuryAverageForParticipant = (scores) => {
   let totalScore = 0;
   let criteriaCount = 0;
   CRITERIA_KEYS.forEach(key => {
-    if (scores && scores[key] !== undefined) { // Added check for scores existence
+    if (scores && scores[key] !== undefined) {
       totalScore += scores[key];
       criteriaCount++;
     }
@@ -26,164 +55,225 @@ const calculateJuryAverageForParticipant = (scores) => {
   return criteriaCount > 0 ? parseFloat((totalScore / criteriaCount).toFixed(2)) : 0;
 };
 
-// Helper Function to aggregate evaluations
-const aggregateEvaluations = (evaluations) => {
-  const participantData = {};
-  evaluations.forEach(evaluation => {
-    const { participantId, participantName, participantCategoria, juryEmail, scores } = evaluation;
-    if (!participantId || !scores || !juryEmail) {
-      console.warn('Skipping evaluation due to missing data:', evaluation);
-      return;
-    }
-    if (!participantData[participantId]) {
-      participantData[participantId] = {
-        id: participantId,
-        name: participantName || 'Nome Desconhecido',
-        category: participantCategoria || 'Categoria Desconhecida', // This should match CATEGORY_ORDER values
-        juryScores: {},
-        criteriaTotals: CRITERIA_KEYS.reduce((acc, key) => ({ ...acc, [key]: 0 }), {}),
-        criteriaCounts: CRITERIA_KEYS.reduce((acc, key) => ({ ...acc, [key]: 0 }), {}),
-      };
-    }
-    const currentP = participantData[participantId];
-    const juryAverage = calculateJuryAverageForParticipant(scores);
-    if (juryAverage > 0 || (scores && Object.keys(scores).length > 0)) { // Consider if jury gave all zeros
-        currentP.juryScores[juryEmail] = juryAverage;
-    }
-    CRITERIA_KEYS.forEach(key => {
-      if (scores && scores[key] !== undefined) {
-        currentP.criteriaTotals[key] += scores[key];
-        currentP.criteriaCounts[key]++;
-      }
+const aggregateParticipantData = async () => {
+    const participantDataMap = new Map();
+    const inscricoesQuery = query(collection(db, "inscricoes"), fbOrderBy("dataInscricao", "desc"));
+    const inscricoesSnapshot = await getDocs(inscricoesQuery);
+
+    inscricoesSnapshot.docs.forEach(doc => {
+        const data = doc.data();
+        participantDataMap.set(doc.id, {
+            id: doc.id,
+            name: data.nome || 'Nome Desconhecido',
+            category: data.categoria || 'Categoria Desconhecida',
+            grau: data.grau || 'Grau não especificado',
+            finalOfficialAward: data.finalOfficialAward || '',
+            juryScores: {}, // Initialize as empty object
+            criteriaTotals: CRITERIA_KEYS.reduce((acc, key) => ({ ...acc, [key]: 0 }), {}),
+            criteriaCounts: CRITERIA_KEYS.reduce((acc, key) => ({ ...acc, [key]: 0 }), {}),
+            email: data.email || '',
+        });
     });
-  });
-  return participantData;
+
+    const avaliacoesQuery = query(collection(db, 'avaliacoes'), fbOrderBy('timestamp', 'desc'));
+    const avaliacoesSnapshot = await getDocs(avaliacoesQuery);
+
+    avaliacoesSnapshot.docs.forEach(doc => {
+        const evaluation = doc.data();
+        const { participantId, juryEmail, scores } = evaluation;
+        if (participantDataMap.has(participantId) && scores && juryEmail) {
+            const currentP = participantDataMap.get(participantId);
+            const juryAverage = calculateJuryAverageForParticipant(scores);
+            if (Object.keys(scores).length > 0 && (juryAverage >= 0)) { // Check if scores object has keys and average is valid
+                 currentP.juryScores[juryEmail] = juryAverage;
+            }
+            CRITERIA_KEYS.forEach(key => {
+                if (scores[key] !== undefined) {
+                    currentP.criteriaTotals[key] += scores[key];
+                    currentP.criteriaCounts[key]++;
+                }
+            });
+        } else if (participantId && (!scores || !juryEmail)) {
+            console.warn('Skipping evaluation: missing scores/juryEmail for participantId:', participantId, evaluation);
+        }
+    });
+    return Object.fromEntries(participantDataMap);
 };
 
-// --- UPDATED: Helper Function to calculate final scores, group, and rank with Ex Aequo ---
-const calculateAndGroupScores = (participantData) => {
+const calculateAndGroupScores = (rawParticipantData) => {
   const scoresByCategory = {};
 
-  // Calculate overall averages for all participants first
-  const participantsWithAverages = Object.values(participantData).map(p => {
-    const individualJuryOverallScores = Object.values(p.juryScores);
+  if (!rawParticipantData || typeof rawParticipantData !== 'object') {
+    console.error("calculateAndGroupScores received invalid rawParticipantData:", rawParticipantData);
+    return scoresByCategory;
+  }
+
+  const participantsWithDetails = Object.values(rawParticipantData).map(p => {
+    if (!p) { // Safeguard for undefined participant object
+        console.warn("Encountered undefined participant in rawParticipantData");
+        return null; // Will be filtered out later
+    }
+
+    const individualJuryOverallScores = (p.juryScores && typeof p.juryScores === 'object') ? Object.values(p.juryScores) : [];
     let finalAverageScore = 0;
     if (individualJuryOverallScores.length > 0) {
-      const sumOfJuryAverages = individualJuryOverallScores.reduce((sum, score) => sum + score, 0);
-      finalAverageScore = sumOfJuryAverages / individualJuryOverallScores.length;
+      finalAverageScore = individualJuryOverallScores.reduce((sum, score) => sum + score, 0) / individualJuryOverallScores.length;
     }
 
     const displayCriteriaAverages = {};
-    CRITERIA_KEYS.forEach(key => {
-      displayCriteriaAverages[key] = p.criteriaCounts[key] > 0
-        ? parseFloat((p.criteriaTotals[key] / p.criteriaCounts[key]).toFixed(2))
-        : 0;
-    });
+    if (p.criteriaCounts && typeof p.criteriaCounts === 'object' && p.criteriaTotals && typeof p.criteriaTotals === 'object') {
+        CRITERIA_KEYS.forEach(key => {
+          displayCriteriaAverages[key] = p.criteriaCounts[key] > 0
+            ? parseFloat((p.criteriaTotals[key] / p.criteriaCounts[key]).toFixed(2))
+            : 0;
+        });
+    } else {
+        CRITERIA_KEYS.forEach(key => { displayCriteriaAverages[key] = 0; });
+        // console.warn("Missing criteriaCounts or criteriaTotals for participant:", p.id);
+    }
+
+    const awardInfo = processAwardString(p.finalOfficialAward);
 
     return {
       ...p,
       overallAverage: parseFloat(finalAverageScore.toFixed(2)),
       criteriaAveragesForDisplay: displayCriteriaAverages,
       numberOfJuriesWhoScored: individualJuryOverallScores.length,
+      awardNumericalPlace: awardInfo.numericalPlace,
+      awardDisplayStringFromJury: awardInfo.displayString,
+      awardIsExAequoByJuryString: awardInfo.isExAequoByString,
     };
-  });
+  }).filter(p => p !== null); // Filter out any null participants from malformed data
 
-  // Group by category
-  participantsWithAverages.forEach(participantResult => {
-    const category = participantResult.category || 'Sem Categoria';
-    if (!scoresByCategory[category]) {
-      scoresByCategory[category] = [];
+  participantsWithDetails.forEach(participantResult => {
+    if (!participantResult || !participantResult.category) {
+        console.warn("Skipping participant result due to missing data:", participantResult);
+        return;
     }
+    const category = participantResult.category; // Assuming category is always present now
+    if (!scoresByCategory[category]) scoresByCategory[category] = [];
     scoresByCategory[category].push(participantResult);
   });
 
-  // Sort and assign places within each category
   for (const categoryKey in scoresByCategory) {
-    // Sort by overallAverage descending, then by name ascending for stable sort on ties
-    scoresByCategory[categoryKey].sort((a, b) => {
-      if (b.overallAverage !== a.overallAverage) {
-        return b.overallAverage - a.overallAverage;
-      }
+    const categoryParticipants = scoresByCategory[categoryKey];
+
+    categoryParticipants.sort((a, b) => {
+      if (!a || !b) return 0; // Safeguard
+      const placeNumA = a.awardNumericalPlace;
+      const placeNumB = b.awardNumericalPlace;
+      if (placeNumA !== placeNumB) return placeNumA - placeNumB;
+      if (b.overallAverage !== a.overallAverage) return b.overallAverage - a.overallAverage;
       return a.name.localeCompare(b.name);
     });
 
-    // Assign places considering ties (Ex Aequo)
-    let currentRank = 0;
-    let lastScore = -1; // Initialize with a score no one can get
-    let participantsAtCurrentRank = 0;
-
-    scoresByCategory[categoryKey].forEach((participant, index) => {
-      if (participant.overallAverage !== lastScore) {
-        // New score, so this is a new rank
-        currentRank = index + 1; // Simple rank progression (1st, 2nd, 3rd after ties)
-        participantsAtCurrentRank = 1;
-        participant.place = currentRank;
-        participant.isExAequo = false;
+    let scoreBasedRankCounter = 0;
+    let lastScoreForRanking = -Infinity;
+    categoryParticipants.forEach(p => {
+      if (!p) return;
+      if (p.awardNumericalPlace === 999) {
+        if (p.overallAverage !== lastScoreForRanking) {
+          scoreBasedRankCounter++;
+        }
+        p.scoreBasedNumericalRank = scoreBasedRankCounter;
+        lastScoreForRanking = p.overallAverage;
       } else {
-        // Same score as previous, so same rank
-        participant.place = currentRank;
-        participantsAtCurrentRank++;
-        participant.isExAequo = true;
-        // Mark the previous one(s) also as exAequo if they share this rank
-        // This ensures all members of a tied group are marked
-        for (let i = 1; i < participantsAtCurrentRank; i++) {
-            if (scoresByCategory[categoryKey][index - i].overallAverage === participant.overallAverage) {
-                scoresByCategory[categoryKey][index - i].isExAequo = true;
-            } else {
-                break; // Stop if scores differ
-            }
+        p.scoreBasedNumericalRank = p.awardNumericalPlace;
+      }
+    });
+
+    categoryParticipants.forEach((participant, index) => {
+      if (!participant) return;
+      participant.isExAequo = false;
+
+      if (participant.awardNumericalPlace !== 999) {
+        participant.placeDisplayString = participant.awardDisplayStringFromJury;
+        participant.isExAequo = participant.awardIsExAequoByJuryString;
+        if (!participant.isExAequo && index > 0) {
+          const prev = categoryParticipants[index - 1];
+          if (prev && participant.awardDisplayStringFromJury === prev.awardDisplayStringFromJury &&
+              participant.awardNumericalPlace < 99 && prev.awardNumericalPlace < 99) {
+            participant.isExAequo = true;
+            prev.isExAequo = true;
+          }
+        }
+        if (participant.isExAequo && !participant.placeDisplayString.toLowerCase().includes('ex aequo') && participant.awardNumericalPlace < 99) {
+            participant.placeDisplayString += " (Ex Aequo)";
+        }
+      } else {
+        participant.placeDisplayString = `${participant.scoreBasedNumericalRank}º`;
+        participant.isExAequo = false;
+        const prev = categoryParticipants[index - 1];
+        const next = categoryParticipants[index + 1];
+        const tiedWithPreviousScore = prev && prev.awardNumericalPlace === 999 && participant.overallAverage === prev.overallAverage && participant.scoreBasedNumericalRank === prev.scoreBasedNumericalRank;
+        const tiedWithNextScore = next && next.awardNumericalPlace === 999 && participant.overallAverage === next.overallAverage && participant.scoreBasedNumericalRank === next.scoreBasedNumericalRank;
+
+        if (tiedWithPreviousScore || tiedWithNextScore) {
+            participant.isExAequo = true;
+        }
+        if (participant.isExAequo) {
+          if (tiedWithPreviousScore && !prev.placeDisplayString.toLowerCase().includes('ex aequo')) {
+              prev.placeDisplayString = `${prev.scoreBasedNumericalRank}º (Ex Aequo)`;
+          }
+          if (!participant.placeDisplayString.toLowerCase().includes('ex aequo')) {
+              participant.placeDisplayString += " (Ex Aequo)";
+          }
+        }
+        if (participant.scoreBasedNumericalRank > 3) {
+          participant.placeDisplayString = 'Menção Honrosa';
+          participant.isExAequo = false;
         }
       }
-      lastScore = participant.overallAverage;
+      if (participant.placeDisplayString === "0º") participant.placeDisplayString = "Não Atribuído";
+      if (!participant.placeDisplayString || ["999º","998º","997º","996º"].includes(participant.placeDisplayString) || participant.placeDisplayString === "") {
+          participant.placeDisplayString = "-";
+      }
+    });
+
+    // Final sort based on the numerical interpretation of the final display string
+    categoryParticipants.sort((a, b) => {
+        if (!a || !b) return 0;
+        const finalPlaceNumA = getNumericalPlace(a.placeDisplayString);
+        const finalPlaceNumB = getNumericalPlace(b.placeDisplayString);
+        if (finalPlaceNumA !== finalPlaceNumB) return finalPlaceNumA - finalPlaceNumB;
+        if (b.overallAverage !== a.overallAverage) return b.overallAverage - a.overallAverage;
+        return a.name.localeCompare(b.name);
     });
   }
   return scoresByCategory;
 };
 
-
-export default function JuryFinalScoresPage() { // Renamed for clarity if this is the jury version
-  const [user, loadingAuth] = useAuthState(auth); // Assuming this page is protected
+export default function JuryFinalScoresPage() {
+  const [user, loadingAuth] = useAuthState(auth);
   const navigate = useNavigate();
   const [scoresByCategories, setScoresByCategories] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // This page should be wrapped by JuryLayout which handles auth redirect
     if (!loadingAuth && !user) {
       // navigate("/jurylogin"); // Handled by JuryLayout
     }
   }, [user, loadingAuth, navigate]);
 
   useEffect(() => {
-    if (user) { // Only fetch if user (jury) is available
+    if (user) {
       const fetchAndProcess = async () => {
-        setIsLoading(true);
-        setError('');
+        setIsLoading(true); setError('');
         try {
-          // Fetch all evaluations
-          const q = query(collection(db, 'avaliacoes'), fbOrderBy('timestamp', 'desc'));
-          const querySnapshot = await getDocs(q);
-          const evaluations = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-          const aggregatedData = aggregateEvaluations(evaluations);
-          const finalGroupedScores = calculateAndGroupScores(aggregatedData); // Uses the updated function
+          const aggregatedRawData = await aggregateParticipantData();
+          const finalGroupedScores = calculateAndGroupScores(aggregatedRawData);
           setScoresByCategories(finalGroupedScores);
-
         } catch (err) {
-          console.error("Error fetching evaluations:", err);
+          console.error("Error fetching or processing evaluations:", err);
           setError('Erro ao carregar as avaliações. Tente novamente.');
-        } finally {
-          setIsLoading(false);
-        }
+        } finally { setIsLoading(false); }
       };
       fetchAndProcess();
     } else if (!loadingAuth && !user) {
-        // If not loading and still no user, might indicate an issue or direct access attempt
-        setIsLoading(false); // Stop loading if no user and not in auth loading state
-        setError("Autenticação necessária para ver esta página.");
+        setIsLoading(false); setError("Autenticação necessária para ver esta página.");
     }
-  }, [user, loadingAuth]); // Depend on user and loadingAuth
+  }, [user, loadingAuth]);
 
   const sortedCategoryNames = useMemo(() => {
     return Object.keys(scoresByCategories).sort((a, b) => {
@@ -196,32 +286,24 @@ export default function JuryFinalScoresPage() { // Renamed for clarity if this i
     });
   }, [scoresByCategories]);
 
-  // Loading state for authentication is handled by JuryLayout
-  // So we mainly care about isLoading for data fetching.
   if (isLoading) {
     return (
-      // Navbar is in JuryLayout
-      <div className="page-content-centered"> {/* Simple centered loading */}
+      <div className="page-content-centered">
         <p className="loading-text">Carregando resultados finais...</p>
       </div>
     );
   }
 
   return (
-    // Navbar is in JuryLayout
-    // The className "final-scores-page-container" might be redundant if JuryLayout's wrapper provides main styling
-    <div className="jury-final-scores-content-area"> {/* More specific class for this page's content */}
-      <main className="final-scores-content"> {/* Keep this for consistent max-width and centering */}
+    <div className="jury-final-scores-content-area">
+      <main className="final-scores-content">
         <h1 className="page-title">Resultados Finais do Concurso (Júri)</h1>
-
         {error && <p className="error-message">{error}</p>}
-
         {!error && sortedCategoryNames.length === 0 && !isLoading && (
-          <p>Ainda não há avaliações submetidas para exibir os resultados.</p>
+          <p>Ainda não há dados de participantes ou avaliações para exibir os resultados.</p>
         )}
-
         {sortedCategoryNames.map(categoryName => (
-          scoresByCategories[categoryName] && scoresByCategories[categoryName].length > 0 && ( // Check if category exists and has items
+          scoresByCategories[categoryName] && scoresByCategories[categoryName].length > 0 && (
             <div key={categoryName} className="category-section">
               <h2 className="category-title">{categoryName}</h2>
               <div className="scores-table-container">
@@ -233,24 +315,30 @@ export default function JuryFinalScoresPage() { // Renamed for clarity if this i
                       {CRITERIA_KEYS.map(key => (
                         <th key={key} className="criterion-header">{key.charAt(0).toUpperCase() + key.slice(1)}</th>
                       ))}
-                      <th>Júris</th>
+                      <th>Júris (Nº)</th>
                       <th>Média Final</th>
                     </tr>
                   </thead>
                   <tbody>
                     {scoresByCategories[categoryName].map((participant) => (
-                      <tr key={participant.id}>
-                        <td>
-                          {participant.place}º
-                          {participant.isExAequo && <span className="ex-aequo-tag"> (Ex Aequo)</span>}
-                        </td>
-                        <td>{participant.name}</td>
-                        {CRITERIA_KEYS.map(key => (
-                          <td key={key}>{participant.criteriaAveragesForDisplay[key]?.toFixed(2) ?? 'N/A'}</td>
-                        ))}
-                        <td>{participant.numberOfJuriesWhoScored}</td>
-                        <td><strong>{participant.overallAverage.toFixed(2)}</strong></td>
-                      </tr>
+                      // Add a null check for participant before trying to access its properties
+                      participant ? (
+                        <tr key={participant.id}>
+                          <td>
+                            {participant.placeDisplayString}
+                          </td>
+                          <td>{participant.name}</td>
+                          {CRITERIA_KEYS.map(key => (
+                            <td key={key}>
+                              {participant.criteriaAveragesForDisplay && participant.criteriaAveragesForDisplay[key] !== undefined
+                                ? participant.criteriaAveragesForDisplay[key].toFixed(2)
+                                : 'N/A'}
+                            </td>
+                          ))}
+                          <td>{participant.numberOfJuriesWhoScored}</td>
+                          <td><strong>{participant.overallAverage?.toFixed(2) ?? 'N/A'}</strong></td>
+                        </tr>
+                      ) : null // Or some placeholder for a null participant if that can happen
                     ))}
                   </tbody>
                 </table>

@@ -1,0 +1,175 @@
+/* src/styles/JuryDashboard.css */
+
+/* ... your existing styles for .panel, .panel-title, .form-group, .form-select, primary buttons etc. ... */
+
+/* Styles for the ParticipantInfoPanel itself (if not already styled well) */
+.panel.participant-info-panel {
+  /* display: flex; */ /* If you want image and text side-by-side, more complex */
+  /* flex-direction: column; */ /* For stacking elements */
+  /* gap: 15px; */
+}
+
+.participant-photo-pip {
+  display: block; /* To allow margin auto if needed and prevent inline quirks */
+  max-width: 200px; /* Control max width of photo */
+  max-height: 250px; /* Control max height of photo */
+  width: auto;
+  height: auto;
+  margin: 0 auto 20px auto; /* Center photo and add space below */
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 6px;
+  object-fit: cover; /* Or contain */
+}
+
+.participant-details-pip p {
+  margin-bottom: 8px; /* Space between info lines */
+  font-size: 0.95rem;
+}
+
+.participant-details-pip p strong {
+  color: var(--label-color, #555);
+  margin-right: 5px;
+}
+
+.pecas-section-pip {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dotted var(--border-color, #e0e0e0); /* Dotted separator */
+}
+
+.pecas-section-pip p strong {
+  display: block; /* Make "Peças a Apresentar:" take its own line */
+  margin-bottom: 5px;
+  font-weight: 600; /* Make it bolder */
+}
+
+.pecas-section-pip ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin-left: 0; /* Reset default ul margin if needed */
+}
+.pecas-section-pip li {
+  margin-bottom: 4px;
+}
+
+
+/* --- Styles for the Award Assignment Section --- */
+.award-assignment-section-pip { /* Specific to this panel section */
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color, #e0e0e0); /* Use your theme's border color */
+}
+
+.award-assignment-section-pip h4 {
+  font-size: 1.1rem; /* Or var(--font-size-lg) from your theme */
+  color: var(--primary-color, #2c3e50); /* Your theme's primary text/header color */
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+/* Assuming .form-group and .form-select are already styled globally or in JuryDashboard.css.
+   If not, you'll need to style them. Below are some basic styles if they aren't.
+   The .pip-form-group and .pip-form-select allow for overrides if needed.
+*/
+.pip-form-group { /* You can use this to override general .form-group if needed */
+  margin-bottom: 15px;
+}
+
+.pip-form-group label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--label-color, #555);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.pip-form-select { /* Style for the select dropdown if it's not inheriting well */
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: var(--border-radius, 6px);
+  font-size: 0.95rem;
+  background-color: #fff; /* Or var(--input-background-color) */
+  color: var(--text-color, #333);
+  box-sizing: border-box;
+}
+
+.pip-form-select:focus {
+  outline: none;
+  border-color: var(--input-focus-border-color, #007bff); /* Your theme's focus color */
+  box-shadow: 0 0 0 3px hsla(210, 70%, 50%, 0.25); /* Or var(--input-focus-shadow) */
+}
+
+.button-pip-confirm-award {
+  /* Use styles similar to your main submit buttons for consistency */
+  background-color: hsl(210, 60%, 50%); /* Your primary action color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--border-radius, 6px);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: inline-block; /* Or block if you want it full width */
+  margin-top: 10px;
+}
+
+.button-pip-confirm-award:hover:not(:disabled) {
+  background-color: hsl(210, 60%, 45%); /* Darker shade on hover */
+  transform: translateY(-1px);
+}
+
+.button-pip-confirm-award:disabled {
+  background-color: #a0aec0; /* Muted color for disabled state */
+  color: #e2e8f0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.current-award-pip {
+  font-size: 0.9rem;
+  color: var(--secondary-color, #6c757d); /* Muted color for info text */
+  margin-top: 12px;
+  font-style: italic;
+}
+
+.current-award-pip strong {
+    font-style: normal; /* Reset italic for "Classificação Atual:" if needed */
+}
+
+/* In JuryDashboard.css or a new dedicated ParticipantInfoPanel.css */
+/* ... other styles for ParticipantInfoPanel ... */
+
+.peca-item-pip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  padding: 4px 0;
+}
+
+.view-score-button-pip {
+  background: none;
+  border: 1px solid transparent; /* Transparent border to maintain size on hover/focus */
+  color: var(--primary-color, hsl(210, 60%, 50%)); /* Theme color for icon */
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  margin-left: 10px;
+  line-height: 1; /* For better icon alignment */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.view-score-button-pip:hover,
+.view-score-button-pip:focus {
+  background-color: hsl(210, 60%, 90%); /* Light blue hover */
+  border-color: hsl(210, 60%, 70%); /* Subtle border on hover */
+  outline: none;
+}
+
+.view-score-icon { /* Styles for the SVG icon */
+  width: 1em; /* Relative to parent font size */
+  height: 1em;
+  vertical-align: middle; /* Align icon nicely with text if button has text */
+}

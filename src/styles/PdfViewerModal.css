@@ -1,0 +1,85 @@
+/* src/styles/PdfViewerModal.css */
+.pdf-modal-overlay-pv {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75); /* Darker overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  opacity: 0;
+  animation: fadeInOverlaySp 0.3s forwards; /* Re-use animation from SimpleModal */
+}
+
+@keyframes fadeInOverlaySp { /* Copied from SimpleModal.css if not global */
+  to { opacity: 1; }
+}
+
+.pdf-modal-content-pv {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+  width: 90vw; /* Take up most of viewport width */
+  height: 90vh; /* Take up most of viewport height */
+  max-width: 1200px; /* But not excessively wide on large screens */
+  max-height: 800px; /* And not excessively tall */
+  z-index: 1051;
+  transform: scale(0.9);
+  opacity: 0;
+  animation: fadeInModalContentSp 0.3s 0.1s forwards; /* Re-use animation */
+  display: flex;
+  flex-direction: column; /* Stack header and body */
+  overflow: hidden; /* Important if iframe is 100% height */
+}
+
+@keyframes fadeInModalContentSp { /* Copied from SimpleModal.css if not global */
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.pdf-modal-header-pv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f8f9fa; /* Light header background */
+  border-bottom: 1px solid #dee2e6;
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.pdf-modal-title-pv {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #343a40;
+  font-weight: 500;
+}
+
+.pdf-modal-close-btn-pv {
+  background: none;
+  border: none;
+  font-size: 1.7rem;
+  font-weight: bold;
+  line-height: 1;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+.pdf-modal-close-btn-pv:hover {
+  color: #343a40;
+}
+
+.pdf-modal-body-pv {
+  flex-grow: 1; /* Allow iframe container to take remaining space */
+  padding: 0; /* No padding, iframe will be edge to edge */
+  overflow: hidden; /* In case iframe itself overflows */
+  background-color: #525659; /* Dark background behind PDF viewer for better contrast */
+}
+
+.pdf-modal-body-pv iframe {
+  display: block; /* Remove extra space below iframe */
+}

@@ -1,0 +1,301 @@
+/* src/styles/ParticipantSubmissionPage.css */
+
+.submission-page-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 25px 20px;
+  background-color: hsl(210, 25%, 96%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+
+.page-header-submission {
+  text-align: center;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 40px auto; /* Adjusted bottom margin slightly */
+  padding: 25px 20px; /* Adjusted padding slightly */
+  border-bottom: 1px solid hsl(210, 15%, 88%); /* Slightly softer border */
+  position: relative;
+}
+
+.page-header-submission h1 {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 2.6rem; /* Adjusted "grandioso" size */
+  color: #1A202C;
+  font-weight: 700;
+  margin-bottom: 10px; /* Adjusted */
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.page-header-submission p {
+  font-size: 1.1rem; /* Adjusted */
+  color: #4A5568;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+/* --- Two-Column Grid Layout --- */
+.submission-layout-grid {
+  display: grid;
+  grid-template-columns: 1.7fr 1.3fr; /* Form a bit wider than image */
+  gap: 40px; /* Increased gap */
+  max-width: 1280px; /* Slightly adjusted max-width */
+  margin: 0 auto;
+  background-color: #ffffff;
+  padding: 35px 40px; /* Good internal padding */
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07); /* Softer shadow */
+}
+
+.submission-form-container {
+  /* Stays as is */
+}
+
+.submission-image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #ffffff;
+  min-height: 450px; /* Adjusted min-height */
+  /* To ensure the container itself can have a defined height for the image's percentage height:
+     You might need to ensure the grid row takes on significant height.
+     If the form column dictates the row height, this is fine.
+     Otherwise, consider setting a more explicit height or aspect-ratio here.
+  */
+}
+
+.submission-side-image {
+  max-width: 100%;
+  max-height: 100%;
+  /* To make the image use the container's height more effectively with object-fit: */
+  width: 100%;  /* Let it try to fill width */
+  height: 75%; /* Let it try to fill height */
+  object-fit: cover; /* Fill and crop, usually best for decorative side images */
+  padding-left: 400px; /* No padding */
+  border-radius: 6px;
+  opacity: 0.45; /* Adjusted opacity */
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Added transform transition */
+}
+
+.submission-image-container:hover .submission-side-image {
+  opacity: 0.7; /* Less than 1 for a more subtle hover effect */
+  transform: scale(1.19); /* Subtle zoom on hover */
+}
+
+/* --- Form Content Styling --- */
+.submission-form-content {
+  /* No specific styles needed if card handles it */
+}
+
+.form-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eaf0f6; /* Even lighter separator */
+}
+.form-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 25px; /* More space before submit button */
+}
+
+.form-section h3 {
+  font-size: 1.2rem; /* Adjusted */
+  color: #2d3748;
+  margin-bottom: 22px; /* More space below section title */
+  font-weight: 600;
+  border-left: 3px solid hsl(210, 60%, 55%); /* Slightly brighter blue */
+  padding-left: 12px;
+}
+
+.form-group {
+  margin-bottom: 20px; /* Increased space between fields */
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  color: #334155;
+  margin-bottom: 8px; /* More space between label and input */
+  font-weight: 500;
+}
+
+/* Combined selector for all text-like inputs and select */
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="email"], /* <<< ADDED input[type="email"] HERE */
+.form-group select {
+  width: 100%;
+  padding: 11px 15px; /* Consistent padding */
+  border: 1px solid #ccd6e0; /* Slightly darker, more defined border */
+  border-radius: 6px;
+  font-size: 0.95rem;
+  color: #1e293b;
+  background-color: #f8fafc; /* Light background for inputs */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box; /* Ensure padding doesn't expand element beyond 100% */
+}
+
+/* Combined focus styles */
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus,
+.form-group input[type="email"]:focus, /* <<< ADDED input[type="email"]:focus HERE */
+.form-group select:focus {
+  outline: none;
+  border-color: hsl(210, 70%, 50%); /* Brighter blue for focus */
+  box-shadow: 0 0 0 3px hsla(210, 70%, 50%, 0.25); /* Focus ring */
+}
+
+.form-group.file-group label { margin-bottom: 8px; }
+.form-group input[type="file"] {
+  display: block;
+  /* padding: 8px 0; /* Removed default browser padding for file inputs */
+  font-size: 0.9rem;
+  color: #4a5568;
+  border: 1px solid #ccd6e0; /* Consistent border */
+  border-radius: 6px;
+  padding: 8px 10px; /* Consistent padding */
+  background-color: #f8fafc; /* Consistent background */
+  width: 100%; /* Make file input take full width */
+  box-sizing: border-box;
+}
+.file-name-display { /* ... keep existing ... */ }
+
+/* --- Submit Button Style --- */
+.submit-btn-submission {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  padding: 12px 30px; /* Adjusted padding for better look */
+  border: transparent;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Adjusted shadow */
+  background: hsl(210, 65%, 50%); /* Slightly adjusted blue */
+  color: white;
+  border-radius: 6px; /* Consistent with inputs */
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+  display: block;
+  width: auto;
+  min-width: 220px;
+  margin: 35px auto 10px auto; /* Increased top margin, added bottom margin */
+  text-align: center;
+}
+
+.submit-btn-submission:hover:not(:disabled) {
+  background: linear-gradient(90deg, hsl(207, 70%, 55%) 0%, hsl(195, 70%, 50%) 100%); /* Brighter gradient */
+  box-shadow: 3px 3px 7px rgba(0,0,0,0.35);
+  transform: translateY(-1px); /* Add slight lift */
+}
+
+.submit-btn-submission:active:not(:disabled) {
+  transform: translate(0em, 0.1em); /* Adjusted press effect */
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.submit-btn-submission:disabled { /* ... keep existing ... */ }
+
+/* --- Messages & Upload Progress --- */
+/* src/styles/ParticipantSubmissionPage.css */
+/* ... (all other styles) ... */
+
+.upload-progress-display {
+    margin-top: 20px; /* More space above progress */
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0; /* Consistent separator */
+}
+
+.upload-progress-display h4 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    color: #334155; /* Consistent text color */
+    font-weight: 500;
+}
+
+.progress-item {
+    margin-bottom: 10px; /* More space between items */
+    font-size: 0.9rem; /* Slightly larger */
+    display: flex; /* Use flex for better alignment */
+    align-items: center;
+}
+
+.file-name-progress {
+    flex-basis: 160px; /* Give filename a fixed basis */
+    flex-shrink: 0; /* Prevent it from shrinking */
+    margin-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #475569; /* Consistent text color */
+}
+
+.progress-bar-container {
+    flex-grow: 1; /* Allow progress bar to take remaining space */
+    background-color: #e9ecef;
+    border-radius: 5px; /* Slightly more rounded */
+    height: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: hsl(210, 70%, 55%);
+    height: 100%;
+    line-height: 20px; /* Match container height */
+    color: white;
+    text-align: center;
+    font-size: 0.8rem; /* Slightly larger progress text */
+    font-weight: 600; /* Bolder progress text */
+    transition: width 0.2s ease-out; /* Smoother, faster transition */
+    white-space: nowrap;
+}
+.submit-message { /* ... */ }
+.upload-progress-display { /* ... */ }
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 950px) {
+  .submission-layout-grid {
+    grid-template-columns: 1fr;
+    padding: 20px 25px; /* Consistent padding */
+    gap: 30px; /* More gap when stacked */
+    max-width: 600px; /* Narrower form on mobile */
+  }
+  .submission-image-container {
+    order: -1;
+    min-height: 200px;
+    max-height: 280px; /* Adjusted */
+    margin-bottom: 30px; /* More space below image */
+  }
+  .submission-page-container { padding: 20px 15px; }
+  .page-header-submission {
+    margin-bottom: 25px; /* Adjusted */
+    padding: 15px 10px;  /* Adjusted */
+  }
+  .page-header-submission h1 { font-size: 2rem; } /* Adjusted */
+  .page-header-submission p { font-size: 1rem; } /* Adjusted */
+}
+
+@media (max-width: 600px) {
+  .submission-layout-grid {
+    padding: 20px 15px; /* Further reduce padding for very small screens */
+  }
+  .form-section h3 { font-size: 1.1rem; }
+  .form-group label,
+  .form-group input[type="text"],
+  .form-group input[type="number"],
+  .form-group input[type="email"], /* Added email here too */
+  .form-group select,
+  .form-group input[type="file"] {
+    font-size: 0.9rem;
+  }
+  .submit-btn-submission {
+    width: 100%;
+    font-size: 1rem;
+    padding: 12px 15px;
+  }
+  .progress-bar-container { /* ... keep existing ... */ }
+  .file-name-progress { /* ... keep existing ... */ }
+
+  /* Removed duplicated .page-header-submission styles from here */
+}

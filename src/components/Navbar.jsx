@@ -7,6 +7,7 @@ import { auth } from "../firebase"; // Adjust path as necessary
 // Import your logos (adjust paths as needed)
 import logoGulbenkian from "../assets/images/logo-gulbenkian.png";
 import logoRepublica from "../assets/images/logo-republica-portuguesa.png";
+import logo from "../assets/images/logo2025.png"; // Assuming you have a logo.png
 
 import "../styles/Navbar.css"; // Adjust path as necessary
 
@@ -42,6 +43,7 @@ export default function Navbar({ user }) {
       <div className="navbar-brand">
         <img src={logoGulbenkian} alt="Calouste Gulbenkian Logo" className="navbar-logo-cmacg" />
         <img src={logoRepublica} alt="República Portuguesa Logo" className="navbar-logo" />
+        <img src={logo} alt="Logo" className="navbar-logo2025" />
       </div>
       {user && (
         <div className="navbar-user-info">

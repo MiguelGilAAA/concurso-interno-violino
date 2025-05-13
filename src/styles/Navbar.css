@@ -41,6 +41,13 @@
   object-fit: contain;
 }
 
+.navbar-logo2025 {
+  height: 180px;
+  object-fit: contain;
+  margin: -5rem 0; /* Fallback if --padding-md is not defined */
+}
+
+
 .navbar-user-info {
   display: flex;
   align-items: center;

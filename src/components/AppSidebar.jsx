@@ -3,6 +3,7 @@ import React from 'react';
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { Link, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import logoConcurso from '../assets/images/logo-gulbenkian.png'; // Adjust path if needed
+import logoMe from '../assets/images/logo-republica-portuguesa.png'; // Adjust path if needed
 import '../styles/AppSidebar.css'; // Import the new CSS file
 
 export default function AppSidebar({ collapsed, toggled, onClose, setBroken }) {
@@ -37,7 +38,10 @@ export default function AppSidebar({ collapsed, toggled, onClose, setBroken }) {
         <Menu> {/* Removed menuItemStyles prop, will use AppSidebar.css */}
           <div className="sidebar-header">
             <img src={logoConcurso} alt="Logo Concurso" className="sidebar-logo" />
-            <span className="sidebar-title">Concurso Violino</span>
+          <span className="sidebar-title">V Concurso Interno</span>
+          <br />
+          <span className="sidebar-title">de Violino</span>
+
           </div>
 
           <MenuItem
@@ -56,7 +60,7 @@ export default function AppSidebar({ collapsed, toggled, onClose, setBroken }) {
             <MenuItem component={<Link to="/regulamento" />} active={location.pathname === "/regulamento"} onClick={() => handleNavigate('/regulamento')}>Regulamento</MenuItem>
             <MenuItem component={<Link to="/inscricao" />} active={location.pathname === "/inscricao"} onClick={() => handleNavigate('/inscricao')}>Inscrições</MenuItem>
             <MenuItem component={<Link to="/juri" />} active={location.pathname === "/juri"} onClick={() => handleNavigate('/juri')}>Júri</MenuItem>
-            <MenuItem component={<Link to="/resultados" />} active={location.pathname === "/resultados"} onClick={() => handleNavigate('/resultados')}>Premiados</MenuItem>
+
           </SubMenu>
 
           <SubMenu
@@ -66,17 +70,11 @@ export default function AppSidebar({ collapsed, toggled, onClose, setBroken }) {
             <MenuItem component={<Link to="/jurylogin" />} active={location.pathname === "/jurylogin"} onClick={() => handleNavigate('/jurylogin')}>Login Júri</MenuItem>
           </SubMenu>
 
-          <MenuItem
-            component={<Link to="/participantes" />}
-            active={location.pathname === "/participantes"}
-            onClick={() => handleNavigate('/participantes')}
-          >
-            Participantes (Ed. V)
-          </MenuItem>
+
         </Menu>
 
         <div className="sidebar-footer">
-          <small>© {new Date().getFullYear()} Concurso Violino</small>
+           <img src={logoMe} alt="Logo Concurso" className="sidebar-logo-footer" />
         </div>
       </div>
     </Sidebar>

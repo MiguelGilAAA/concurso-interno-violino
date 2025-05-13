@@ -19,6 +19,7 @@ export default function ParticipantInfoPanel({ participant }) {
       )}
       <p><strong>Nome:</strong> {participant.nome}</p>
       <p><strong>Categoria:</strong> {participant.categoria}</p>
+      <p><strong>Grau:</strong> {participant.grau}</p>
       {participant.pecas && participant.pecas.length > 0 && (
         <div>
           <p><strong>Peças a Apresentar:</strong></p>

@@ -30,6 +30,15 @@
   height: 20px;
 }
 
+.sidebar-logo-footer {
+  height: 22px;
+  width: auto;
+  transition: height 0.3s ease;
+}
+.ps-collapsed .sidebar-logo { /* When sidebar is collapsed */
+  height: 20px;
+}
+
 .sidebar-title {
   margin-left: 10px;
   font-size: 1.0rem; /* Adjusted size */

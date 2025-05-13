@@ -2,15 +2,24 @@
 import React from 'react';
 import '../styles/PublicMainPage.css'; // Create this CSS file
 
+
+import logoConcurso2025 from '../assets/images/logo2025.png';
+
 export default function PublicMainPage() {
   return (
     <div className="public-main-page">
       <header className="hero-section">
-        <h1>V Concurso Interno de Violino</h1>
-        <p>Bem-vindo à página oficial do nosso concurso! Descubra talentos, consulte o regulamento e acompanhe os resultados.</p>
-        {/* You can add an image or carousel here */}
-      </header>
-
+             {/* Use the logo image here */}
+             <img
+               src={logoConcurso2025}
+               alt="V Concurso Interno de Violino 2025"
+               className="hero-logo" // Specific class for this logo
+             />
+             {/* Optional: Keep a tagline or remove if the logo is sufficient */}
+             <p className="hero-tagline">
+               Bem-vindo à página oficial do nosso concurso! Descubra talentos, consulte o regulamento e acompanhe os resultados.
+             </p>
+           </header>
       <section className="contest-info">
         <h2>Sobre o Concurso</h2>
         <p>

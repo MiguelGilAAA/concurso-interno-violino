@@ -116,11 +116,11 @@ export default function RegulamentoPage() {
             <p>
               Para a presente edição serão de considerar as seguintes datas:
               <ul>
-                        <li>Inscrições: até 10 de junho</li>
-                        <li>Calendarização: disponível a 12 de junho</li>
-                        <li>Provas: 14 de junho</li>
-                        <li>Resultados: 14 de junho (após término de todas as categorias)</li>
-                        <li>Concerto Laureados (1º prémios): 14 de junho - horário a definir</li>
+                        <li><strong>Inscrições:</strong> até 10 de junho</li>
+                        <li><strong>Calendarização:</strong> disponível a 12 de junho</li>
+                        <li><strong>Provas:</strong> 14 de junho</li>
+                        <li><strong>Resultados:</strong> 14 de junho (após término de todas as categorias)</li>
+                        <li><strong>Concerto Laureados (1º prémios):</strong> 14 de junho - horário a definir</li>
                       </ul>
 
             </p>

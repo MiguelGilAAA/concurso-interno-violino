@@ -17,7 +17,7 @@ export default function PublicMainPage() {
              />
              {/* Optional: Keep a tagline or remove if the logo is sufficient */}
              <p className="hero-tagline">
-               Bem-vindo à página oficial do nosso concurso! Descubra talentos, consulte o regulamento e acompanhe os resultados.
+               Bem-vindo à página oficial do nosso concurso!
              </p>
            </header>
       <section className="contest-info">

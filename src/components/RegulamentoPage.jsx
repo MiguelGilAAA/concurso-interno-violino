@@ -58,7 +58,9 @@ export default function RegulamentoPage() {
         <ul>
           <li>Ficha de inscrição devidamente preenchida.</li>
           <li>Indicação das peças a apresentar (conforme Artigo 4º).</li>
-          <li>Comprovativo de pagamento da taxa de inscrição.</li>
+          <li>Comprovativo de pagamento da taxa de inscrição.
+              <p><ul>A inscrição terá um valor de 30€ e deverá ser paga a para o IBAN PT50 0035 0123 00134544930 85</ul></p>
+              </li>
           <li>Partituras das peças (em formato PDF).</li>
           <li>Fotografia do participante.</li>
         </ul>

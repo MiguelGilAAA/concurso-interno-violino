@@ -1,6 +1,6 @@
 // src/pages/Login.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import "../styles/Login.css"; // Import your CSS file
@@ -28,11 +28,13 @@ export default function Login() {
 
   return (
     <div className="login-container">
-      <img
-        src={logoGulbenkian}
-        alt="Calouste Gulbenkian Logo"
-        className="login-logo-main"
-      />
+      <Link to="/" className="login-logo-link"> {/* <<< ADDED Link WRAPPER */}
+              <img
+                src={logoGulbenkian}
+                alt="Logótipo Calouste Gulbenkian - Ir para Página Principal" // More descriptive alt text
+                className="login-logo-main"
+              />
+      </Link>
       <h1 className="title-title">Concurso Interno Violino 2025</h1>
       <h3 className="login-title">Login do Júri</h3>
       <form onSubmit={handleLogin} className="login-form">

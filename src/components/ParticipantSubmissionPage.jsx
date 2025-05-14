@@ -46,6 +46,8 @@ export default function ParticipantSubmissionPage() {
     }
   };
 
+
+
   const uploadFileAndGetURL = async (file, participantName, pathPrefix) => {
     if (!file) return null;
     const sanitizedParticipantName = participantName.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase() || 'participante_desconhecido';
@@ -202,7 +204,7 @@ export default function ParticipantSubmissionPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  placeholder="exemplo@dominio.com"
+                  placeholder="exemplo@cmacg.pt"
                 />
               </div>
               <div className="form-group">
@@ -258,7 +260,7 @@ export default function ParticipantSubmissionPage() {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="peca2">Peça 2 (Título e Compositor - Opcional):</label>
+                <label htmlFor="peca2">Peça 2 (Título e Compositor):</label>
                 <input
                   type="text"
                   id="peca2"
@@ -270,9 +272,9 @@ export default function ParticipantSubmissionPage() {
             </div>
 
             <div className="form-section">
-              <h3>Documentos (PDF ou Imagem)</h3>
+              <h3>Documentos</h3>
               <div className="form-group file-group">
-                <label htmlFor="partitura1File">Partitura Peça 1:</label>
+                <label htmlFor="partitura1File">Partitura Peça 1 (PDF):</label>
                 <input
                   type="file"
                   id="partitura1File"
@@ -284,7 +286,7 @@ export default function ParticipantSubmissionPage() {
                 {formData.partitura1File && <span className="file-name-display">{formData.partitura1File.name}</span>}
               </div>
               <div className="form-group file-group">
-                <label htmlFor="partitura2File">Partitura Peça 2 (Opcional):</label>
+                <label htmlFor="partitura2File">Partitura Peça 2 (PDF):</label>
                 <input
                   type="file"
                   id="partitura2File"
@@ -295,7 +297,7 @@ export default function ParticipantSubmissionPage() {
                 {formData.partitura2File && <span className="file-name-display">{formData.partitura2File.name}</span>}
               </div>
               <div className="form-group file-group">
-                <label htmlFor="fotoFile">Fotografia do Participante:</label>
+                <label htmlFor="fotoFile">Fotografia do Participante (JPG/JPEG/PNG):</label>
                 <input
                   type="file"
                   id="fotoFile"
@@ -307,7 +309,7 @@ export default function ParticipantSubmissionPage() {
                 {formData.fotoFile && <span className="file-name-display">{formData.fotoFile.name}</span>}
               </div>
               <div className="form-group file-group">
-                <label htmlFor="comprovativoFile">Comprovativo Inscrição:</label>
+                <label htmlFor="comprovativoFile">Comprovativo Inscrição (JPG/JPEG/PNG/PDF):</label>
                 <input
                   type="file"
                   id="comprovativoFile"

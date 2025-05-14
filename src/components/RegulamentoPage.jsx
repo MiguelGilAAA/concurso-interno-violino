@@ -2,6 +2,15 @@
 import React from 'react';
 import '../styles/RegulamentoPage.css'; // We'll create this CSS file
 
+const CATEGORIAS_REGULAMENTO = [
+  { id: 'A', description: 'Categoria A: ( 2º ano de Iniciação)' },
+  { id: 'B', description: 'Categoria B: ( 3º e 4º ano de Iniciação)' },
+  { id: 'C', description: 'Categoria C: ( 1º e 2º Grau do Ensino Artístico Especializado)' },
+  { id: 'D', description: 'Categoria D: ( 3º e 4º Grau do Ensino Artístico Especializado)' },
+  { id: 'E', description: 'Categoria E: ( 5º e 6º Grau do Ensino Artístico Especializado)' },
+  { id: 'F', description: 'Categoria F: ( 7º e 8º Grau do Ensino Artístico Especializado)' }
+];
+
 export default function RegulamentoPage() {
   return (
     <div className="regulamento-page-container">
@@ -29,14 +38,13 @@ export default function RegulamentoPage() {
             <strong>Elegibilidade:</strong> Podem concorrer todos os alunos regularmente matriculados na disciplina de Violino da Escola Artística do Conservatório de Música Calouste Gulbenkian de Aveiro no presente ano letivo.
           </li>
           <li>
-            <strong>Categorias:</strong> O concurso está dividido nas seguintes categorias, de acordo com o nível de proficiência e idade (exemplos):
-            <ul>
-              <li>Categoria A: Iniciantes (até X anos de estudo / Y idade)</li>
-              <li>Categoria B: Intermédios Nível 1 (até X anos de estudo / Y idade)</li>
-              <li>Categoria C: Intermédios Nível 2 (até X anos de estudo / Y idade)</li>
-              <li>Categoria D: Avançados (mais de X anos de estudo / Y idade)</li>
-            </ul>
-            <p><em>Nota: A definição exata das categorias será detalhada pela organização.</em></p>
+            <strong>Categorias:</strong> O concurso está dividido nas seguintes categorias:
+            <ul className="category-list-rg">
+                          {CATEGORIAS_REGULAMENTO.map(cat => (
+                            <li key={cat.id}>{cat.description}</li>
+                          ))}
+                        </ul>
+
           </li>
         </ol>
       </section>
@@ -44,15 +52,15 @@ export default function RegulamentoPage() {
       <section className="regulamento-section">
         <h2>Artigo 3º – Inscrições</h2>
         <p>
-          As inscrições deverão ser efetuadas online através do formulário disponível na página do concurso, dentro do prazo estipulado.
+          As inscrições deverão ser efetuadas online através do formulário disponível na página do concurso até à data de <strong> 10 de junho de 2025</strong>.
           Será necessário submeter:
         </p>
         <ul>
           <li>Ficha de inscrição devidamente preenchida.</li>
           <li>Indicação das peças a apresentar (conforme Artigo 4º).</li>
-          <li>Comprovativo de pagamento da taxa de inscrição (se aplicável).</li>
+          <li>Comprovativo de pagamento da taxa de inscrição.</li>
           <li>Partituras das peças (em formato PDF).</li>
-          <li>Fotografia tipo passe do participante.</li>
+          <li>Fotografia do participante.</li>
         </ul>
         <p><em>A não submissão de todos os elementos dentro do prazo poderá invalidar a inscrição.</em></p>
       </section>
@@ -60,15 +68,18 @@ export default function RegulamentoPage() {
       <section className="regulamento-section">
         <h2>Artigo 4º – Repertório</h2>
         <p>
-          Cada participante deverá apresentar X peças de estilos contrastantes, sendo uma delas obrigatoriamente de compositor português (ou outra especificação).
+          Cada participante deverá apresentar 2 peças de estilos contrastantes.
           A duração total da apresentação não deverá exceder:
         </p>
         <ul>
-          <li>Categoria A: Y minutos</li>
-          <li>Categoria B: Z minutos</li>
-          {/* ... etc ... */}
+          <li>Categoria A: 5 minutos</li>
+          <li>Categoria B: 5 minutos</li>
+          <li>Categoria C: 10 minutos</li>
+          <li>Categoria D: 10 minutos</li>
+          <li>Categoria E: 15 minutos</li>
+          <li>Categoria F: 15 minutos</li>
         </ul>
-        <p>As peças devem ser executadas de memória (ou indicar se é opcional/obrigatório).</p>
+
       </section>
 
       <section className="regulamento-section">
@@ -79,31 +90,57 @@ export default function RegulamentoPage() {
       </section>
 
       <section className="regulamento-section">
-        <h2>Artigo 6º – Avaliação e Classificação</h2>
+        <h2>Artigo 6º – Avaliação e Classificação/Prémios</h2>
         <p>
-          Os critérios de avaliação incluirão, mas не se limitarão a:
+          Os critérios de avaliação incluirão:
         </p>
         <ul>
           <li>Afinação</li>
           <li>Rigor rítmico e métrico</li>
-          <li>Qualidade sonora (Timbre, Projeção, Articulação)</li>
-          <li>Técnica instrumental (Posição, Arcos, Dedilhação)</li>
-          <li>Interpretação (Expressividade, Fraseado, Dinâmicas, Carácter)</li>
-          <li>Presença em palco e adequação postural</li>
+          <li>Qualidade sonora</li>
+          <li>Postura</li>
+          <li>Interpretação</li>
+          <li>Presença em palco</li>
         </ul>
-        <p>Serão atribuídos prémios aos primeiros classificados de cada categoria. Poderão ser atribuídas menções honrosas a critério do júri.</p>
+        <p>Serão atribuídos prémios aos primeiros classificados das categoria D,E e F. Poderão ser atribuídas menções honrosas a critério do júri.</p>
+        <p>Serão atribuídos diplomas a todos os participantes do concurso.</p>
+        <p>Os primeiros classificados poderão participar no concerto de laureados a ser realizado no próprio dia na parte da tarde em horário a definir.</p>
       </section>
 
+
+
       <section className="regulamento-section">
-        <h2>Artigo 7º – Disposições Finais</h2>
+            <h2>Artigo 7º – Datas</h2>
+            <p>
+              Para a presente edição serão de considerar as seguintes datas:
+              <ul>
+                        <li>Inscrições: até 10 de junho</li>
+                        <li>Calendarização: disponível a 12 de junho</li>
+                        <li>Provas: 14 de junho</li>
+                        <li>Resultados: 14 de junho (após término de todas as categorias)</li>
+                        <li>Concerto Laureados (1º prémios): 14 de junho - horário a definir</li>
+                      </ul>
+
+            </p>
+          </section>
+
+     <section className="regulamento-section">
+        <h2>Artigo 8º – Disposições Finais</h2>
         <p>
           Casos omissos neste regulamento serão resolvidos pela comissão organizadora do concurso. A participação no concurso implica a aceitação integral do presente regulamento.
         </p>
       </section>
 
+
+    <section className="regulamento-section">
+            <h2>Artigo 9º – Contactos</h2>
+            <p>
+             Para esclarecimentos adicionais poderão contactar a organização através do e-mail miguel.gil@cmacg.pt
+            </p>
+          </section>
+
       <footer className="page-footer-rg">
         <p>Escola Artística do Conservatório de Música Calouste Gulbenkian de Aveiro</p>
-        <p>Data da última atualização do regulamento: DD/MM/AAAA</p>
       </footer>
     </div>
   );
